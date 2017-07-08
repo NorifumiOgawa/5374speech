@@ -16,6 +16,7 @@ def main():
     youbi_ja = ["月","火","水","木","金","土","日"]
     d = datetime.now()
     youbi_count = int(math.floor((d.day + 6) / 7))
+    gomi_count = 0
 
     text = '今日は第%s%s曜日、ゴミの収集日です。' % (youbi_count, youbi_ja[d.weekday()])
     youbi_with_count = str(youbi_count) + youbi[d.weekday()]
@@ -27,10 +28,12 @@ def main():
 
             if youbi[d.weekday()] in recur.get("BYDAY", []) or youbi_with_count in recur.get("BYDAY", []):
                 text = text + summary + ' '
+                gomi_count+=1
 
-    text = CMD_TALK + ' \"' + text + 'を捨てましょう。\"'
-    proc = subprocess.Popen(shlex.split(text))
-    proc.communicate()
+    if gomi_count > 0:
+        text = CMD_TALK + ' \"' + text + 'を捨てましょう。\"'
+        proc = subprocess.Popen(shlex.split(text))
+        proc.communicate()
 
 if __name__ == '__main__':
     main()
